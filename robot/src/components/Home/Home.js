@@ -1,4 +1,9 @@
 import React, { Component } from "react";
+import * as Direction from './Variables';
+
+const regex = {
+  PLACE: /^PLACE\s+[1-5]+\s*,\s*[1-5]+\s*,\s*(WEST||NORTH||EAST||SOUTH)$/,
+};
 
 class Home extends Component {
   state = {
@@ -12,18 +17,21 @@ class Home extends Component {
     let userInput = event.target.value;
     let getCoordination;
     // let isRobotOnBoard = false;
-    let regex = /^PLACE\s+\d+\s*,\s*\d+\s*,\s*(WEST||NORTH||EAST||SOUTH)$/;
+    //let regex = /^PLACE\s+\d+\s*,\s*\d+\s*,\s*(WEST||NORTH||EAST||SOUTH)$/;
 
-    if (userInput.match(regex) && event.key === "Enter") {
+    if (userInput.match(regex.PLACE) && event.key === "Enter") {
       getCoordination = userInput.split(/[ ,]+/);
       this.storeRobotPosition(getCoordination);
       this.setState({ isPlace: true });
-    } else if (!userInput.match(regex) && event.key === "Enter" && !this.state.isPlace) {
-      alert("Please place the Robot down to use other command.");
-    } 
+    } else if (
+      event.key === "Enter" &&
+      !this.state.isPlace
+    ) {
+      alert("Please place the Robot down to use the other commands.");
+    }
 
-    if (this.state.isPlace) {
-        this.placeRobotDown(getCoordination, userInput);
+    if (this.state.isPlace && event.key === "Enter") {
+      this.placeRobotDown(getCoordination, userInput);
     }
 
     // if (!this.state.isPlace) {
@@ -44,29 +52,88 @@ class Home extends Component {
     let updatedPos = {
       ...this.state,
     };
-    if (userInput === "MOVE") {
-      switch (this.state.F) {
-        case "NORTH":
-          updatedPos = this.state.X + 1;
-          this.setState({ X: updatedPos });
-          break;
-        case "EAST":
-          updatedPos = this.state.Y + 1;
-          this.setState({ Y: updatedPos });
-          break;
-        // case "SOUTH":
-        //   const oldPos = this.state.X;
-        //   const newPos = parseInt(oldPos - 1);
-        //   this.setState({ X: newPos });
-        //   break;
-        // case "WEST":
-        //   const oldPos = this.state.Y;
-        //   const newPos = parseInt(oldPos - 1);
-        //   this.setState({ X: newPos });
-        //   break;
-        default:
-          console.log("nothing");
-      }
+
+    switch (userInput) {
+      case "LEFT":
+        this.moveLeft(updatedPos);
+        break;
+      case "RIGHT":
+        this.moveRight(updatedPos);
+        break;
+      case "MOVE":
+        this.moveSets(updatedPos);
+        break;
+      default:
+        console.log("hey");
+    }
+  }
+
+  moveLeft(updatedPos) {
+    switch (this.state.F) {
+      case Direction.NORTH:
+        updatedPos = Direction.WEST;
+        this.setState({ F: updatedPos });
+        break;
+      case Direction.EAST:
+        updatedPos = Direction.NORTH;
+        this.setState({ F: updatedPos });
+        break;
+      case Direction.SOUTH:
+        updatedPos = Direction.EAST;
+        this.setState({ F: updatedPos });
+        break;
+      case Direction.WEST:
+        updatedPos = Direction.SOUTH;
+        this.setState({ F: updatedPos });
+        break;
+      default:
+        console.log("nothing");
+    }
+  }
+
+  moveRight(updatedPos) {
+    switch (this.state.F) {
+      case Direction.NORTH:
+        updatedPos = Direction.EAST;
+        this.setState({ F: updatedPos });
+        break;
+      case Direction.EAST:
+        updatedPos = Direction.SOUTH;
+        this.setState({ F: updatedPos });
+        break;
+      case Direction.SOUTH:
+        updatedPos = Direction.WEST;
+        this.setState({ F: updatedPos });
+        break;
+      case Direction.WEST:
+        updatedPos = Direction.NORTH;
+        this.setState({ F: updatedPos });
+        break;
+      default:
+        console.log("nothing");
+    }
+  }
+
+  moveSets(updatedPos) {
+    switch (this.state.F) {
+      case Direction.NORTH:
+        updatedPos = this.state.X + 1;
+        this.setState({ X: updatedPos });
+        break;
+      case Direction.EAST:
+        updatedPos = this.state.Y + 1;
+        this.setState({ Y: updatedPos });
+        break;
+      case Direction.SOUTH:
+        updatedPos = this.state.X - 1;
+        this.setState({ X: updatedPos });
+        break;
+      case Direction.WEST:
+        updatedPos = this.state.Y - 1;
+        this.setState({ Y: updatedPos });
+        break;
+      default:
+        console.log("nothing");
     }
   }
 
