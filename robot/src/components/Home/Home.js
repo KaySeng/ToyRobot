@@ -2,8 +2,8 @@ import React, { Component } from "react";
 
 class Home extends Component {
   state = {
-    X: null,
-    Y: null,
+    X: 0,
+    Y: 0,
     F: null,
     isPlace: false,
   };
@@ -14,30 +14,66 @@ class Home extends Component {
     // let isRobotOnBoard = false;
     let regex = /^PLACE\s+\d+\s*,\s*\d+\s*,\s*(WEST||NORTH||EAST||SOUTH)$/;
 
-    if (!this.state.isPlace) {
-      // Check if rebot is placed on board
-      if (userInput.match(regex) && event.key === "Enter") {
-        getCoordination = userInput.split(/[ ,]+/);
-        this.storeRobotPosition(getCoordination);
-        this.setState({ isPlace: true });
-      } else if (!userInput.match(regex) && event.key === "Enter") {
-        alert("Please place the Robot down to use other command.");
-      }
-    } else {
-      this.placeRobotDown(getCoordination, userInput);
+    if (userInput.match(regex) && event.key === "Enter") {
+      getCoordination = userInput.split(/[ ,]+/);
+      this.storeRobotPosition(getCoordination);
+      this.setState({ isPlace: true });
+    } else if (!userInput.match(regex) && event.key === "Enter" && !this.state.isPlace) {
+      alert("Please place the Robot down to use other command.");
+    } 
+
+    if (this.state.isPlace) {
+        this.placeRobotDown(getCoordination, userInput);
     }
+
+    // if (!this.state.isPlace) {
+    //   // Check if rebot is placed on board
+    //   if (userInput.match(regex) && event.key === "Enter") {
+    //     getCoordination = userInput.split(/[ ,]+/);
+    //     this.storeRobotPosition(getCoordination);
+    //     this.setState({ isPlace: true });
+    //   } else if (!userInput.match(regex) && event.key === "Enter") {
+    //     alert("Please place the Robot down to use other command.");
+    //   }
+    // } else {
+    //   this.placeRobotDown(getCoordination, userInput);
+    // }
   };
 
   placeRobotDown(pos, userInput) {
-    if (userInput === "hello") {
-      console.log(userInput);
+    let updatedPos = {
+      ...this.state,
+    };
+    if (userInput === "MOVE") {
+      switch (this.state.F) {
+        case "NORTH":
+          updatedPos = this.state.X + 1;
+          this.setState({ X: updatedPos });
+          break;
+        case "EAST":
+          updatedPos = this.state.Y + 1;
+          this.setState({ Y: updatedPos });
+          break;
+        // case "SOUTH":
+        //   const oldPos = this.state.X;
+        //   const newPos = parseInt(oldPos - 1);
+        //   this.setState({ X: newPos });
+        //   break;
+        // case "WEST":
+        //   const oldPos = this.state.Y;
+        //   const newPos = parseInt(oldPos - 1);
+        //   this.setState({ X: newPos });
+        //   break;
+        default:
+          console.log("nothing");
+      }
     }
   }
 
   storeRobotPosition(pos) {
     this.setState({
-      X: pos[1],
-      Y: pos[2],
+      X: parseInt(pos[1]),
+      Y: parseInt(pos[2]),
       F: pos[3],
     });
   }
