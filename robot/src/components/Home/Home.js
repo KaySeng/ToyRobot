@@ -1,8 +1,12 @@
 import React, { Component } from "react";
-import * as Direction from './Variables';
+import * as Direction from "./Variables";
 
 const regex = {
   PLACE: /^PLACE\s+[1-5]+\s*,\s*[1-5]+\s*,\s*(WEST||NORTH||EAST||SOUTH)$/,
+  MOVE: /^MOVE$/,
+  LEFT: /^LEFT$/,
+  RIGHT: /^RIGHT$/,
+  REPORT: /^REPORT$/,
 };
 
 class Home extends Component {
@@ -19,33 +23,30 @@ class Home extends Component {
     // let isRobotOnBoard = false;
     //let regex = /^PLACE\s+\d+\s*,\s*\d+\s*,\s*(WEST||NORTH||EAST||SOUTH)$/;
 
+    //  user input validation
+    if (event.key === "Enter") {
+      if (
+        !userInput.match(regex.PLACE) &&
+        !userInput.match(regex.MOVE) &&
+        !userInput.match(regex.LEFT) &&
+        !userInput.match(regex.RIGHT) &&
+        !userInput.match(regex.REPORT)
+      ) {
+        alert("Please enter a valid command");
+      }
+    }
+
     if (userInput.match(regex.PLACE) && event.key === "Enter") {
       getCoordination = userInput.split(/[ ,]+/);
       this.storeRobotPosition(getCoordination);
       this.setState({ isPlace: true });
-    } else if (
-      event.key === "Enter" &&
-      !this.state.isPlace
-    ) {
+    } else if (event.key === "Enter" && !this.state.isPlace) {
       alert("Please place the Robot down to use the other commands.");
     }
 
     if (this.state.isPlace && event.key === "Enter") {
       this.placeRobotDown(getCoordination, userInput);
     }
-
-    // if (!this.state.isPlace) {
-    //   // Check if rebot is placed on board
-    //   if (userInput.match(regex) && event.key === "Enter") {
-    //     getCoordination = userInput.split(/[ ,]+/);
-    //     this.storeRobotPosition(getCoordination);
-    //     this.setState({ isPlace: true });
-    //   } else if (!userInput.match(regex) && event.key === "Enter") {
-    //     alert("Please place the Robot down to use other command.");
-    //   }
-    // } else {
-    //   this.placeRobotDown(getCoordination, userInput);
-    // }
   };
 
   placeRobotDown(pos, userInput) {
@@ -62,6 +63,9 @@ class Home extends Component {
         break;
       case "MOVE":
         this.moveSets(updatedPos);
+        break;
+      case "REPORT":
+        alert(`X: ${updatedPos.X}, Y: ${updatedPos.Y}, F: ${updatedPos.F}`);
         break;
       default:
         console.log("hey");
@@ -118,7 +122,11 @@ class Home extends Component {
     switch (this.state.F) {
       case Direction.NORTH:
         updatedPos = this.state.X + 1;
-        this.setState({ X: updatedPos });
+        if (updatedPos < 5) {
+          this.setState({ X: updatedPos });
+        } else {
+          alert("Invalid move");
+        }
         break;
       case Direction.EAST:
         updatedPos = this.state.Y + 1;
@@ -152,11 +160,7 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <input
-          placeholder="PLACE ..."
-          onKeyPress={this.handEnterKey}
-          //   value="PLACE 0,2,NORTH"
-        />
+        <input placeholder="PLACE ..." onKeyPress={this.handEnterKey} />
         <input type="Button" value="test" onClick={this.test} />
       </div>
     );
