@@ -64,6 +64,10 @@ Example a
 Expected output:
 
     0,1,NORTH
+	
+Actual output:
+
+    0,1,NORTH
 
 Example b
 
@@ -72,6 +76,10 @@ Example b
     REPORT
 
 Expected output:
+
+    0,0,WEST
+	
+Actual output:
 
     0,0,WEST
 
@@ -85,5 +93,9 @@ Example c
     REPORT
 
 Expected output
+
+    3,3,NORTH
+
+Actual output
 
     3,3,NORTH
