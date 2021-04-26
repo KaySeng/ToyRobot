@@ -7,7 +7,7 @@ This application was developed in React using pure javascript without any other 
 
 ## How to run this application
 
-To run this application, simply open the command prompt and change the current directory to this path 'REA_toy_robot_v5\toy-robot\robot'. Run ### `npm install`. Once completed, run ### `npm start'
+To run this application, simply open the command prompt and change the current directory to this path 'REA_toy_robot_v5\toy-robot\robot'. Run `npm install`. Once completed, run `npm start`
 
 ## Design
 Before I started working on this application. I made sure to read the PROBLEM.md and to try and have a clear understanding of the requirements. Once I understood the requirements, I started planning on how and what I needed to do. 
