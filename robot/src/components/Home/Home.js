@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import * as Direction from "./Variables";
 
+// regex to validate user input
 const regex = {
   PLACE: /^PLACE\s+[1-5]+\s*,\s*[1-5]+\s*,\s*(WEST||NORTH||EAST||SOUTH)$/,
   MOVE: /^MOVE$/,
@@ -20,10 +21,8 @@ class Home extends Component {
   handEnterKey = (event) => {
     let userInput = event.target.value;
     let getCoordination;
-    // let isRobotOnBoard = false;
-    //let regex = /^PLACE\s+\d+\s*,\s*\d+\s*,\s*(WEST||NORTH||EAST||SOUTH)$/;
 
-    //  user input validation
+    //  User input validation
     if (event.key === "Enter") {
       if (
         !userInput.match(regex.PLACE) &&
@@ -56,10 +55,10 @@ class Home extends Component {
 
     switch (userInput) {
       case "LEFT":
-        this.moveLeft(updatedPos);
+        this.changeDirection(updatedPos, userInput);
         break;
       case "RIGHT":
-        this.moveRight(updatedPos);
+        this.changeDirection(updatedPos, userInput);
         break;
       case "MOVE":
         this.moveSets(updatedPos);
@@ -72,22 +71,23 @@ class Home extends Component {
     }
   }
 
-  moveLeft(updatedPos) {
+  // Changing robot direction, only has two possible options, LEFT or RIGHT
+  changeDirection(updatedPos, userInput) {
     switch (this.state.F) {
       case Direction.NORTH:
-        updatedPos = Direction.WEST;
+        updatedPos = userInput === "LEFT" ? Direction.WEST : Direction.EAST;
         this.setState({ F: updatedPos });
         break;
       case Direction.EAST:
-        updatedPos = Direction.NORTH;
+        updatedPos = userInput === "LEFT" ? Direction.NORTH : Direction.SOUTH;
         this.setState({ F: updatedPos });
         break;
       case Direction.SOUTH:
-        updatedPos = Direction.EAST;
+        updatedPos = userInput === "LEFT" ? Direction.EAST : Direction.WEST;
         this.setState({ F: updatedPos });
         break;
       case Direction.WEST:
-        updatedPos = Direction.SOUTH;
+        updatedPos = userInput === "LEFT" ? Direction.SOUTH : Direction.NORTH;
         this.setState({ F: updatedPos });
         break;
       default:
@@ -95,28 +95,51 @@ class Home extends Component {
     }
   }
 
-  moveRight(updatedPos) {
-    switch (this.state.F) {
-      case Direction.NORTH:
-        updatedPos = Direction.EAST;
-        this.setState({ F: updatedPos });
-        break;
-      case Direction.EAST:
-        updatedPos = Direction.SOUTH;
-        this.setState({ F: updatedPos });
-        break;
-      case Direction.SOUTH:
-        updatedPos = Direction.WEST;
-        this.setState({ F: updatedPos });
-        break;
-      case Direction.WEST:
-        updatedPos = Direction.NORTH;
-        this.setState({ F: updatedPos });
-        break;
-      default:
-        console.log("nothing");
-    }
-  }
+  // moveLeft(updatedPos) {
+  //   switch (this.state.F) {
+  //     case Direction.NORTH:
+  //       updatedPos = Direction.WEST;
+  //       this.setState({ F: updatedPos });
+  //       break;
+  //     case Direction.EAST:
+  //       updatedPos = Direction.NORTH;
+  //       this.setState({ F: updatedPos });
+  //       break;
+  //     case Direction.SOUTH:
+  //       updatedPos = Direction.EAST;
+  //       this.setState({ F: updatedPos });
+  //       break;
+  //     case Direction.WEST:
+  //       updatedPos = Direction.SOUTH;
+  //       this.setState({ F: updatedPos });
+  //       break;
+  //     default:
+  //       console.log("nothing");
+  //   }
+  // }
+
+  // moveRight(updatedPos) {
+  //   switch (this.state.F) {
+  //     case Direction.NORTH:
+  //       updatedPos = Direction.EAST;
+  //       this.setState({ F: updatedPos });
+  //       break;
+  //     case Direction.EAST:
+  //       updatedPos = Direction.SOUTH;
+  //       this.setState({ F: updatedPos });
+  //       break;
+  //     case Direction.SOUTH:
+  //       updatedPos = Direction.WEST;
+  //       this.setState({ F: updatedPos });
+  //       break;
+  //     case Direction.WEST:
+  //       updatedPos = Direction.NORTH;
+  //       this.setState({ F: updatedPos });
+  //       break;
+  //     default:
+  //       console.log("nothing");
+  //   }
+  // }
 
   moveSets(updatedPos) {
     switch (this.state.F) {
