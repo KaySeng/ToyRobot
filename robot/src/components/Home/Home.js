@@ -10,7 +10,7 @@ class Home extends Component {
     isPlace: false, // check to see if robot is on board
   };
 
-  handEnterKey = (event) => {
+  handleEnterKey = (event) => {
     let userInput = event.target.value;
     let getCoordination;
 
@@ -36,11 +36,11 @@ class Home extends Component {
     }
 
     if (this.state.isPlace && event.key === "Enter") {
-      this.placeRobotDown(getCoordination, userInput);
+      this.robotIsOnTable(userInput);
     }
   };
 
-  placeRobotDown(pos, userInput) {
+  robotIsOnTable(userInput) {
     let updatedPos = {
       ...this.state,
     };
@@ -107,6 +107,7 @@ class Home extends Component {
     this.isMoveValid(updatedPos);
   }
 
+  // Check to see if robot is moving outside the 5x5 board.
   isMoveValid(updatedPos) {
     let robotIsFacing = this.state.F;
     if (updatedPos >= 0 && updatedPos <= 5) {
@@ -119,7 +120,8 @@ class Home extends Component {
       alert("Invalid move");
     }
   }
-
+  
+  // Store Robot position when placed down on the table.
   storeRobotPosition(pos) {
     this.setState({
       X: parseInt(pos[1]),
@@ -128,15 +130,10 @@ class Home extends Component {
     });
   }
 
-  test = () => {
-    console.log(this.state);
-  };
-
   render() {
     return (
       <div>
-        <input placeholder="PLACE ..." onKeyPress={this.handEnterKey} />
-        <input type="Button" value="test" onClick={this.test} />
+        <input placeholder="PLACE ..." onKeyPress={this.handleEnterKey} />
       </div>
     );
   }

@@ -14,7 +14,7 @@ function App() {
         <li>RIGHT - will rotate the robot 90 degrees to the right without changing the position of the robot</li>
         <li>REPORT will announce the X,Y and F of the robot. This can be in any form, but standard output is sufficient</li>
       </ol>
-      <p>Please enter command in below textbox</p>
+      <p>Use the textbox below and use Enter key to issue command</p>
       <Home />
     </div>
   );
