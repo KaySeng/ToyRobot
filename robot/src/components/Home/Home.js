@@ -1,41 +1,33 @@
 import React, { Component } from "react";
-import * as Direction from "./Variables";
-
-// regex to validate user input
-const regex = {
-  PLACE: /^PLACE\s+[1-5]+\s*,\s*[1-5]+\s*,\s*(WEST||NORTH||EAST||SOUTH)$/,
-  MOVE: /^MOVE$/,
-  LEFT: /^LEFT$/,
-  RIGHT: /^RIGHT$/,
-  REPORT: /^REPORT$/,
-};
+import * as Input from "./Variables";
 
 class Home extends Component {
+  // state to contain all robot information
   state = {
     X: 0,
     Y: 0,
-    F: null,
-    isPlace: false,
+    F: null, // NORTH, EAST, SOUTH, WEST
+    isPlace: false, // check to see if robot is on board
   };
 
   handEnterKey = (event) => {
     let userInput = event.target.value;
     let getCoordination;
 
-    //  User input validation
+    //  User input validation, only accept valid command else print out error message.
     if (event.key === "Enter") {
       if (
-        !userInput.match(regex.PLACE) &&
-        !userInput.match(regex.MOVE) &&
-        !userInput.match(regex.LEFT) &&
-        !userInput.match(regex.RIGHT) &&
-        !userInput.match(regex.REPORT)
+        !userInput.match(Input.REGEX.PLACE) &&
+        !userInput.match(Input.REGEX.MOVE) &&
+        !userInput.match(Input.REGEX.LEFT) &&
+        !userInput.match(Input.REGEX.RIGHT) &&
+        !userInput.match(Input.REGEX.REPORT)
       ) {
         alert("Please enter a valid command");
       }
     }
 
-    if (userInput.match(regex.PLACE) && event.key === "Enter") {
+    if (userInput.match(Input.REGEX.PLACE) && event.key === "Enter") {
       getCoordination = userInput.split(/[ ,]+/);
       this.storeRobotPosition(getCoordination);
       this.setState({ isPlace: true });
@@ -67,104 +59,64 @@ class Home extends Component {
         alert(`X: ${updatedPos.X}, Y: ${updatedPos.Y}, F: ${updatedPos.F}`);
         break;
       default:
-        console.log("hey");
+        console.log("Invalid options");
     }
   }
 
   // Changing robot direction, only has two possible options, LEFT or RIGHT
   changeDirection(updatedPos, userInput) {
     switch (this.state.F) {
-      case Direction.NORTH:
-        updatedPos = userInput === "LEFT" ? Direction.WEST : Direction.EAST;
+      case Input.NORTH:
+        updatedPos = userInput === "LEFT" ? Input.WEST : Input.EAST;
         this.setState({ F: updatedPos });
         break;
-      case Direction.EAST:
-        updatedPos = userInput === "LEFT" ? Direction.NORTH : Direction.SOUTH;
+      case Input.EAST:
+        updatedPos = userInput === "LEFT" ? Input.NORTH : Input.SOUTH;
         this.setState({ F: updatedPos });
         break;
-      case Direction.SOUTH:
-        updatedPos = userInput === "LEFT" ? Direction.EAST : Direction.WEST;
+      case Input.SOUTH:
+        updatedPos = userInput === "LEFT" ? Input.EAST : Input.WEST;
         this.setState({ F: updatedPos });
         break;
-      case Direction.WEST:
-        updatedPos = userInput === "LEFT" ? Direction.SOUTH : Direction.NORTH;
+      case Input.WEST:
+        updatedPos = userInput === "LEFT" ? Input.SOUTH : Input.NORTH;
         this.setState({ F: updatedPos });
         break;
       default:
-        console.log("nothing");
+        alert("Please enter a valid command");
     }
   }
 
-  // moveLeft(updatedPos) {
-  //   switch (this.state.F) {
-  //     case Direction.NORTH:
-  //       updatedPos = Direction.WEST;
-  //       this.setState({ F: updatedPos });
-  //       break;
-  //     case Direction.EAST:
-  //       updatedPos = Direction.NORTH;
-  //       this.setState({ F: updatedPos });
-  //       break;
-  //     case Direction.SOUTH:
-  //       updatedPos = Direction.EAST;
-  //       this.setState({ F: updatedPos });
-  //       break;
-  //     case Direction.WEST:
-  //       updatedPos = Direction.SOUTH;
-  //       this.setState({ F: updatedPos });
-  //       break;
-  //     default:
-  //       console.log("nothing");
-  //   }
-  // }
-
-  // moveRight(updatedPos) {
-  //   switch (this.state.F) {
-  //     case Direction.NORTH:
-  //       updatedPos = Direction.EAST;
-  //       this.setState({ F: updatedPos });
-  //       break;
-  //     case Direction.EAST:
-  //       updatedPos = Direction.SOUTH;
-  //       this.setState({ F: updatedPos });
-  //       break;
-  //     case Direction.SOUTH:
-  //       updatedPos = Direction.WEST;
-  //       this.setState({ F: updatedPos });
-  //       break;
-  //     case Direction.WEST:
-  //       updatedPos = Direction.NORTH;
-  //       this.setState({ F: updatedPos });
-  //       break;
-  //     default:
-  //       console.log("nothing");
-  //   }
-  // }
-
   moveSets(updatedPos) {
     switch (this.state.F) {
-      case Direction.NORTH:
-        updatedPos = this.state.X + 1;
-        if (updatedPos < 5) {
-          this.setState({ X: updatedPos });
-        } else {
-          alert("Invalid move");
-        }
-        break;
-      case Direction.EAST:
+      case Input.NORTH:
         updatedPos = this.state.Y + 1;
-        this.setState({ Y: updatedPos });
         break;
-      case Direction.SOUTH:
-        updatedPos = this.state.X - 1;
-        this.setState({ X: updatedPos });
+      case Input.EAST:
+        updatedPos = this.state.X + 1;
         break;
-      case Direction.WEST:
+      case Input.SOUTH:
         updatedPos = this.state.Y - 1;
-        this.setState({ Y: updatedPos });
+        break;
+      case Input.WEST:
+        updatedPos = this.state.X - 1;
         break;
       default:
-        console.log("nothing");
+        console.log("Invalid Direction");
+    }
+    this.isMoveValid(updatedPos);
+  }
+
+  isMoveValid(updatedPos) {
+    let robotIsFacing = this.state.F;
+    if (updatedPos >= 0 && updatedPos <= 5) {
+      if (robotIsFacing === Input.NORTH || robotIsFacing === Input.SOUTH) {
+        this.setState({ Y: updatedPos });
+      } else if (robotIsFacing === Input.EAST || robotIsFacing === Input.WEST) {
+        this.setState({ X: updatedPos });
+      }
+    } else {
+      alert("Invalid move");
     }
   }
 
